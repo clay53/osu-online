@@ -80,7 +80,33 @@ function draw () {
 				});
 			} else if (type[0] === 'Slider') {
 				if (hitObject[5].startsWith("L|")) {
-					console.log(hitObject[5].substr(2).split(':'));
+					let tPos = hitObject[5].substr(2).split(':');
+					actions.unshift({
+						x: hitObject[0],
+						y: hitObject[1],
+						tX: tPos[0],
+						tY: tPos[1],
+						time: hitObject[2],
+						draw: function () {
+							let r = currentMap.circleSize;
+
+							push();
+							fill(255, 255, 255);
+							strokeWeight(r/20);
+							ellipse(this.x, this.y, r);
+							ellipse(this.tX, this.tY, r);
+							
+							push();
+							translate((this.x+this.tX)/2, (this.y+this.tY)/2);
+
+							pop();
+							pop();
+
+							if (currentTime >= this.time) {
+								actions.splice(actions.indexOf(this), 1);
+							}
+						}
+					});
 				} else {
 					console.log(hitObject[5][0] + "|Slider");
 				}
