@@ -79,7 +79,11 @@ function draw () {
 					}
 				});
 			} else if (type[0] === 'Slider') {
-				
+				if (hitObject[5].startsWith("L|")) {
+					console.log(hitObject[5].substr(2).split(':'));
+				} else {
+					console.log(hitObject[5][0] + "|Slider");
+				}
 			} else {
 				console.log(type[0]);
 			}
