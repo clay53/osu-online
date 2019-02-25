@@ -1,5 +1,5 @@
-var fps = 74;
-var fpsM = 3;
+var fps = 60;
+var fpsM = 2;
 var beatmapSet = {};
 var scene = 'menu';
 var currentMap;

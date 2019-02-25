@@ -21,6 +21,7 @@ function draw () {
 				if (mouseY > i*spacing && mouseY < (i+1)*spacing) {
 					push();
 					fill(0, 0, 0, mouseIsPressed ? 40 : 20);
+					noStroke();
 					rect(0, i*spacing, width, spacing);
 					pop();
 					if (mouseIsPressed) {
@@ -81,11 +82,17 @@ function draw () {
 			} else if (type[0] === 'Slider') {
 				if (hitObject[5].startsWith("L|")) {
 					let tPos = hitObject[5].substr(2).split(':');
+					let distX = hitObject[0]-tPos[0];
+					let distY = hitObject[1]-tPos[1];
 					actions.unshift({
 						x: hitObject[0],
 						y: hitObject[1],
 						tX: tPos[0],
 						tY: tPos[1],
+						distX: distX,
+						distY: distY,
+						rotation: Math.atan2(distY, distX)*180/Math.PI-180,
+						length: Math.sqrt(distX*distX+distY*distY),
 						time: hitObject[2],
 						draw: function () {
 							let r = currentMap.circleSize;
@@ -93,13 +100,28 @@ function draw () {
 							push();
 							fill(255, 255, 255);
 							strokeWeight(r/20);
+
+							push();
+							translate(this.x, this.y);
+							angleMode(DEGREES);
+							rotate(this.rotation);
+							rect(
+								0,
+								-r/2,
+								this.length,
+								r
+							);
+							pop();
+
 							ellipse(this.x, this.y, r);
 							ellipse(this.tX, this.tY, r);
-							
-							push();
-							translate((this.x+this.tX)/2, (this.y+this.tY)/2);
 
-							pop();
+							if (currentTime <= this.time) {
+								push();
+								strokeWeight(r/10);
+								ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt+1));
+								pop();
+							}
 							pop();
 
 							if (currentTime >= this.time) {
