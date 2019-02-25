@@ -50,6 +50,10 @@ function draw () {
 			songPlaying = true;
 		}
 		currentTime = beatmapSet.audioFiles[currentMap.audioName].audio.currentTime()*1000;
+		while (currentMap.timingPoints.length > 0 && currentMap.timingPoints[0][0]-currentMap.preempt <= currentTime) {
+			currentMap.timing = currentMap.timingPoints[0];
+			currentMap.timingPoints.shift();
+		}
 		while (currentMap.hitObjects.length > 0 && currentMap.hitObjects[0][2]-currentMap.preempt <= currentTime) {
 			//let latency = beatmapSet.audioFiles[currentMap.audioName].audio.currentTime()*1000-currentMap.hitObjects[0][2];
 			let hitObject = currentMap.hitObjects[0];
@@ -60,6 +64,10 @@ function draw () {
 					y: hitObject[1],
 					time: hitObject[2],
 					draw: function () {
+						if (currentTime >= this.time) {
+							actions.splice(actions.indexOf(this), 1);
+						}
+
 						let r = currentMap.circleSize;
 
 						push();
@@ -73,10 +81,6 @@ function draw () {
 						strokeWeight(r/20);
 						ellipse(this.x, this.y, r);
 						pop();
-
-						if (currentTime >= this.time) {
-							actions.splice(actions.indexOf(this), 1);
-						}
 					}
 				});
 			} else if (type[0] === 'Slider') {
@@ -84,6 +88,7 @@ function draw () {
 					let tPos = hitObject[5].substr(2).split(':');
 					let distX = hitObject[0]-tPos[0];
 					let distY = hitObject[1]-tPos[1];
+					let duration = hitObject[7]/(100*currentMap.sliderMultiplier)*currentMap.timing[1];
 					actions.unshift({
 						x: hitObject[0],
 						y: hitObject[1],
@@ -94,7 +99,14 @@ function draw () {
 						rotation: Math.atan2(distY, distX)*180/Math.PI-180,
 						length: Math.sqrt(distX*distX+distY*distY),
 						time: hitObject[2],
+						endTime: hitObject[2]+duration,
+						duration: duration,
+						repeats: hitObject[6],
 						draw: function () {
+							if (currentTime >= this.endTime) {
+								actions.splice(actions.indexOf(this), 1);
+							}
+
 							let r = currentMap.circleSize;
 
 							push();
@@ -118,15 +130,27 @@ function draw () {
 
 							if (currentTime <= this.time) {
 								push();
+								noFill();
 								strokeWeight(r/10);
 								ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt+1));
 								pop();
+							} else {
+								push();
+								translate(this.x, this.y);
+								angleMode(DEGREES);
+								rotate(this.rotation);
+								strokeWeight(r/10);
+								let sliderTimeOdd = Math.floor((this.endTime-currentTime)*this.repeats/this.duration) % 2 === 1;
+								console.log(sliderTimeOdd);
+								ellipse(
+									(sliderTimeOdd ?
+										(this.endTime-currentTime)/this.duration*this.length :
+										-(this.endTime-currentTime)/this.duration*this.length+this.length
+									),
+									0, r);
+								pop();
 							}
 							pop();
-
-							if (currentTime >= this.time) {
-								actions.splice(actions.indexOf(this), 1);
-							}
 						}
 					});
 				} else {

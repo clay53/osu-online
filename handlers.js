@@ -28,7 +28,7 @@ function onBeatmapUpload () {
 						}
 						if (format === "osu") {
 							file.async('string').then((str) => {
-								var map = {hitObjects: []};
+								var map = {hitObjects: [], timingPoints: []};
 								let lines = str.split('\r\n');
 								lines.splice(-1);
 								var currentTag;
@@ -89,9 +89,11 @@ function onBeatmapUpload () {
 												let CS = parseInt(sub);
 												map.circleSize = 54.4-4.48*CS;
 											}, "ApproachRate:": function (sub) {
-												let AR = parseInt(sub);
+												let AR = parseFloat(sub);
 												map.preempt = AR < 5 ? 1200+600*(5-AR)/5 : (AR === 5 ? 1200 : 1200+750*(AR-5)/5);
 												map.fadeIn = AR < 5 ? 800+400*(5-AR)/5 : (AR === 5 ? 800 : 800-500*(AR-5)/5);
+											}, "SliderMultiplier:": function (sub) {
+												map.sliderMultiplier = parseFloat(sub);
 											}
 										}
 										for (var i in tags) {
@@ -99,6 +101,19 @@ function onBeatmapUpload () {
 												tags[i](line.substring(i.length));
 											}
 										}
+									} else if (currentTag === 'TimingPoints') {
+										var point = line.split(',');
+										if (point.length > 1) {
+											for (var i in point) {
+												point[i] = parseFloat(point[i]);
+											}
+											if (point[1] < 0) {
+												point[1] = map.lastPositiveMPB*(-point[1]/100);
+											} else {
+												map.lastPositiveMPB = point[1];
+											}
+										}
+										map.timingPoints.push(point);
 									}
 
 									// Update currentTag
