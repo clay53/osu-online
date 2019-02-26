@@ -13,20 +13,36 @@ function onBeatmapUpload () {
 					resetToMenu();
 					beatmapSet = {
 						maps: [],
-						audioFiles: {}
+						audioFiles: {},
+						backgroundFiles: {}
 					};
 					for (var i in zip.files) {
 						let file = zip.files[i];
 						let format = file.name.split('.').splice(-1)[0];
-						if (format === "mp3") {
+						if (format === "mp3" || format === "wav") {
 							beatmapSet.audioFiles[file.name] = {loaded: false};
 							file.async('blob').then((blob) => {
 								beatmapSet.audioFiles[file.name].audio = loadSound(blob, (audio) => {
 									beatmapSet.audioFiles[file.name].loaded = true;
 								});
 							});
-						}
-						if (format === "osu") {
+						} else if (format === "jpg" || format === "png") {
+							beatmapSet.backgroundFiles[file.name] = {loaded: false, type: 'image'};
+							file.async('base64').then((base64) => {
+								beatmapSet.backgroundFiles[file.name].img = loadImage('data:image;base64,' + base64, (img) => {
+									beatmapSet.backgroundFiles[file.name].loaded = true;
+								});
+							});
+						} else if (format === "mp4") {
+							beatmapSet.backgroundFiles[file.name] = {loaded: false, type: 'video'};
+							file.async('base64').then((base64) => {
+								beatmapSet.backgroundFiles[file.name].vid = createVideo('data:video/' + format + ';base64,' + base64, (vid) => {
+									beatmapSet.backgroundFiles[file.name].vid.hide();
+									beatmapSet.backgroundFiles[file.name].vid.volume(0);
+									beatmapSet.backgroundFiles[file.name].loaded = true;
+								});
+							});
+						} else if (format === "osu") {
 							file.async('string').then((str) => {
 								var map = {hitObjects: [], timingPoints: []};
 								let lines = str.split('\r\n');
@@ -112,8 +128,12 @@ function onBeatmapUpload () {
 											} else {
 												map.lastPositiveMPB = point[1];
 											}
+											map.timingPoints.push(point);
 										}
-										map.timingPoints.push(point);
+									} else if (currentTag === 'Events') {
+										if (line.startsWith('//Background and Video events')) {
+											map.background = lines[parseInt(i)+1].split(',')[2].slice(1, -1);
+										}
 									}
 
 									// Update currentTag
@@ -128,6 +148,8 @@ function onBeatmapUpload () {
 								beatmapSet.maps.push(map);
 								console.log(beatmapSet);
 							});
+						} else {
+							console.log("Unkown format: " + format);
 						}
 					}
 				});

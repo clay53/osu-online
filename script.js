@@ -5,15 +5,30 @@ function setup () {
 
 function draw () {
 	setTimeout(redraw, 1000/(fps*fpsM));
-	background(255*0.95);
 	if (scene === 'menu') {
+		background(255*0.95);
 		let spacing = 30;
 		let offset = 2.5;
 		for (var i in beatmapSet.maps) {
 			i = parseInt(i);
 			line(0, (i+1)*spacing, width, (i+1)*spacing);
 			let map = beatmapSet.maps[i];
-			if (map.mode === '0' && beatmapSet.audioFiles[map.audioName].loaded) {
+			if (map.mode != '0') {
+				push();
+				textAlign(RIGHT, TOP);
+				text("Mode not yet supported", width, i*spacing+offset);
+				pop();
+			} else if (!beatmapSet.backgroundFiles[map.background].loaded) {
+				push();
+				textAlign(RIGHT, TOP);
+				text("Loading Background...", width, i*spacing+offset);
+				pop();
+			} else if (!beatmapSet.audioFiles[map.audioName].loaded) {
+				push();
+				textAlign(RIGHT, TOP);
+				text("Loading Audio...", width, i*spacing+offset);
+				pop();
+			} else {
 				push();
 				textAlign(RIGHT, TOP);
 				text(map.title + " [" + map.version + "]\nA:" + map.artist + " M:" + map.creator, width, i*spacing+offset);
@@ -31,24 +46,32 @@ function draw () {
 						scene = 'game';
 					}
 				}
-			} else if (map.mode === '0') {
-				push();
-				textAlign(RIGHT, TOP);
-				text("Loading Audio...", width, i*spacing+offset);
-				pop();
-			} else {
-				push();
-				textAlign(RIGHT, TOP);
-				text("Mode not yet supported", width, i*spacing+offset);
-				pop();
 			}
 		}
 	} else if (scene === 'game') {
+		let bg = beatmapSet.backgroundFiles[currentMap.background];
 		if (!songPlaying) {
 			beatmapSet.audioFiles[currentMap.audioName].audio.setVolume(0.3);
 			beatmapSet.audioFiles[currentMap.audioName].audio.play();
+			if (bg.type === 'video') {
+				bg.vid.play();
+			}
 			songPlaying = true;
 		}
+		push();
+		imageMode(CENTER);
+		if (bg.type === 'image') {
+			let bgS = width/bg.img.width < height/bg.img.height ? width/bg.img.width : height/bg.img.height;
+			background(0);
+			image(bg.img, width/2, height/2, bg.img.width*bgS, bg.img.height*bgS);
+		} else if (bg.type === 'video') {
+			let bgS = width/bg.vid.width < height/bg.vid.height ? width/bg.vid.width : height/bg.vid.height;
+			background(0);
+			image(bg.vid, width/2, height/2, bg.vid.width*bgS, bg.vid.height*bgS);
+		} else {
+			background(255*0.95);
+		}
+		pop();
 		currentTime = beatmapSet.audioFiles[currentMap.audioName].audio.currentTime()*1000;
 		while (currentMap.timingPoints.length > 0 && currentMap.timingPoints[0][0]-currentMap.preempt <= currentTime) {
 			currentMap.timing = currentMap.timingPoints[0];
@@ -140,10 +163,8 @@ function draw () {
 								angleMode(DEGREES);
 								rotate(this.rotation);
 								strokeWeight(r/10);
-								let sliderTimeOdd = Math.floor((this.endTime-currentTime)*this.repeats/this.duration) % 2 === 1;
-								console.log(sliderTimeOdd);
 								ellipse(
-									(sliderTimeOdd ?
+									(Math.floor((this.endTime-currentTime)*this.repeats/this.duration) % 2 === 1 ?
 										(this.endTime-currentTime)/this.duration*this.length :
 										-(this.endTime-currentTime)/this.duration*this.length+this.length
 									),
