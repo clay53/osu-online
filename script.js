@@ -18,7 +18,7 @@ function draw () {
 				textAlign(RIGHT, TOP);
 				text("Mode not yet supported", width, i*spacing+offset);
 				pop();
-			} else if (!beatmapSet.backgroundFiles[map.background].loaded) {
+			} else if (showBG && !beatmapSet.backgroundFiles[map.background].loaded) {
 				push();
 				textAlign(RIGHT, TOP);
 				text("Loading Background...", width, i*spacing+offset);
@@ -52,19 +52,20 @@ function draw () {
 		let bg = beatmapSet.backgroundFiles[currentMap.background];
 		if (!songPlaying) {
 			beatmapSet.audioFiles[currentMap.audioName].audio.setVolume(0.3);
+			beatmapSet.audioFiles[currentMap.audioName].audio.rate(0.1);
 			beatmapSet.audioFiles[currentMap.audioName].audio.play();
-			if (bg.type === 'video') {
+			if (showBG && bg.type === 'video') {
 				bg.vid.play();
 			}
 			songPlaying = true;
 		}
 		push();
 		imageMode(CENTER);
-		if (bg.type === 'image') {
+		if (showBG && bg.type === 'image') {
 			let bgS = width/bg.img.width < height/bg.img.height ? width/bg.img.width : height/bg.img.height;
 			background(0);
 			image(bg.img, width/2, height/2, bg.img.width*bgS, bg.img.height*bgS);
-		} else if (bg.type === 'video') {
+		} else if (showBG && bg.type === 'video') {
 			let bgS = width/bg.vid.width < height/bg.vid.height ? width/bg.vid.width : height/bg.vid.height;
 			background(0);
 			image(bg.vid, width/2, height/2, bg.vid.width*bgS, bg.vid.height*bgS);
@@ -119,6 +120,7 @@ function draw () {
 						tY: tPos[1],
 						distX: distX,
 						distY: distY,
+						moved: 0,
 						rotation: Math.atan2(distY, distX)*180/Math.PI-180,
 						length: Math.sqrt(distX*distX+distY*distY),
 						time: hitObject[2],
@@ -163,10 +165,11 @@ function draw () {
 								angleMode(DEGREES);
 								rotate(this.rotation);
 								strokeWeight(r/10);
+								let repeats = Math.abs(Math.floor((this.endTime-currentTime)*this.repeats/this.duration));
 								ellipse(
-									(Math.floor((this.endTime-currentTime)*this.repeats/this.duration) % 2 === 1 ?
-										(this.endTime-currentTime)/this.duration*this.length :
-										-(this.endTime-currentTime)/this.duration*this.length+this.length
+									(repeats % 2 === 1 ?
+										(this.endTime-currentTime)*this.repeats/this.duration*this.length-this.length*repeats :
+										this.length*(repeats+1)-(this.endTime-currentTime)*this.repeats/this.duration*this.length
 									),
 									0, r);
 								pop();
