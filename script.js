@@ -1,10 +1,12 @@
 function setup () {
-	createCanvas(512, 384);
+	createCanvas(enlarge ? windowWidth : 512, enlarge ? windowHeight : 384);
 	noLoop();
 }
 
 function draw () {
 	setTimeout(redraw, 1000/(fps*fpsM));
+	var wRSmaller = width/512 < height/384;
+	var s = width/512 < height/384 ? width/512 : height/384;
 	if (scene === 'menu') {
 		background(255*0.95);
 		let spacing = 30;
@@ -61,11 +63,11 @@ function draw () {
 		push();
 		imageMode(CENTER);
 		if (currentMap.hasBG && showBG && bg.type === 'image') {
-			let bgS = width/bg.img.width < height/bg.img.height ? width/bg.img.width : height/bg.img.height;
+			let bgS = width/bg.img.width > height/bg.img.height ? width/bg.img.width : height/bg.img.height;
 			background(0);
 			image(bg.img, width/2, height/2, bg.img.width*bgS, bg.img.height*bgS);
 		} else if (currentMap.hasBG && showBG && bg.type === 'video') {
-			let bgS = width/bg.vid.width < height/bg.vid.height ? width/bg.vid.width : height/bg.vid.height;
+			let bgS = width/bg.vid.width > height/bg.vid.height ? width/bg.vid.width : height/bg.vid.height;
 			background(0);
 			image(bg.vid, width/2, height/2, bg.vid.width*bgS, bg.vid.height*bgS);
 		} else {
@@ -183,7 +185,11 @@ function draw () {
 			currentMap.hitObjects.shift();
 		}
 		for (var i in actions) {
+			push();
+			scale(s, s);
+			translate(wRSmaller ? (width-512*s)/2 : 0, wRSmaller ? 0 : (height-384*s)/2);
 			actions[i].draw();
+			pop();
 		}
 	}
 }
