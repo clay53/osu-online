@@ -52,7 +52,6 @@ function draw () {
 		let bg = beatmapSet.backgroundFiles[currentMap.background];
 		if (!songPlaying) {
 			beatmapSet.audioFiles[currentMap.audioName].audio.setVolume(0.3);
-			beatmapSet.audioFiles[currentMap.audioName].audio.rate(0.1);
 			beatmapSet.audioFiles[currentMap.audioName].audio.play();
 			if (showBG && bg.type === 'video') {
 				bg.vid.play();
