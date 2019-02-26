@@ -44,7 +44,10 @@ function onBeatmapUpload () {
 							});
 						} else if (format === "osu") {
 							file.async('string').then((str) => {
-								var map = {hitObjects: [], timingPoints: []};
+								var map = {
+									hitObjects: [],
+									timingPoints: [],
+									colors: []};
 								let lines = str.split('\r\n');
 								lines.splice(-1);
 								var currentTag;
@@ -117,6 +120,15 @@ function onBeatmapUpload () {
 												tags[i](line.substring(i.length));
 											}
 										}
+									} else if (currentTag === 'Events') {
+										if (line.startsWith('//Background and Video events')) {
+											try {
+												map.hasBG = true;
+												map.background = lines[parseInt(i)+1].split(',')[2].slice(1, -1);
+											} catch {
+												map.hasBG = false;
+											}
+										}
 									} else if (currentTag === 'TimingPoints') {
 										var point = line.split(',');
 										if (point.length > 1) {
@@ -130,15 +142,20 @@ function onBeatmapUpload () {
 											}
 											map.timingPoints.push(point);
 										}
-									} else if (currentTag === 'Events') {
-										if (line.startsWith('//Background and Video events')) {
-											try {
-												map.hasBG = true;
-												map.background = lines[parseInt(i)+1].split(',')[2].slice(1, -1);
-											} catch {
-												map.hasBG = false;
+									} else if (currentTag === 'Colours') {
+											var color = line.split(',');
+											if (color.length === 3) {
+												for (var i in color) {
+													i = parseInt(i);
+													let c = color[i];
+													if (i === 0) {
+														color[i] = parseInt(c.substring(c.lastIndexOf(' ')+1));
+													} else {
+														color[i] = parseInt(c);
+													}
+												}
+												map.colors.push(color);
 											}
-										}
 									}
 
 									// Update currentTag
