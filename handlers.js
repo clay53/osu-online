@@ -132,7 +132,12 @@ function onBeatmapUpload () {
 										}
 									} else if (currentTag === 'Events') {
 										if (line.startsWith('//Background and Video events')) {
-											map.background = lines[parseInt(i)+1].split(',')[2].slice(1, -1);
+											try {
+												map.hasBG = true;
+												map.background = lines[parseInt(i)+1].split(',')[2].slice(1, -1);
+											} catch {
+												map.hasBG = false;
+											}
 										}
 									}
 

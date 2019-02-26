@@ -18,7 +18,7 @@ function draw () {
 				textAlign(RIGHT, TOP);
 				text("Mode not yet supported", width, i*spacing+offset);
 				pop();
-			} else if (showBG && !beatmapSet.backgroundFiles[map.background].loaded) {
+			} else if (map.hasBG && showBG && !beatmapSet.backgroundFiles[map.background].loaded) {
 				push();
 				textAlign(RIGHT, TOP);
 				text("Loading Background...", width, i*spacing+offset);
@@ -53,18 +53,18 @@ function draw () {
 		if (!songPlaying) {
 			beatmapSet.audioFiles[currentMap.audioName].audio.setVolume(0.3);
 			beatmapSet.audioFiles[currentMap.audioName].audio.play();
-			if (showBG && bg.type === 'video') {
+			if (currentMap.hasBG && showBG && bg.type === 'video') {
 				bg.vid.play();
 			}
 			songPlaying = true;
 		}
 		push();
 		imageMode(CENTER);
-		if (showBG && bg.type === 'image') {
+		if (currentMap.hasBG && showBG && bg.type === 'image') {
 			let bgS = width/bg.img.width < height/bg.img.height ? width/bg.img.width : height/bg.img.height;
 			background(0);
 			image(bg.img, width/2, height/2, bg.img.width*bgS, bg.img.height*bgS);
-		} else if (showBG && bg.type === 'video') {
+		} else if (currentMap.hasBG && showBG && bg.type === 'video') {
 			let bgS = width/bg.vid.width < height/bg.vid.height ? width/bg.vid.width : height/bg.vid.height;
 			background(0);
 			image(bg.vid, width/2, height/2, bg.vid.width*bgS, bg.vid.height*bgS);
@@ -123,7 +123,7 @@ function draw () {
 						rotation: Math.atan2(distY, distX)*180/Math.PI-180,
 						length: Math.sqrt(distX*distX+distY*distY),
 						time: hitObject[2],
-						endTime: hitObject[2]+duration,
+						endTime: hitObject[2]+duration*hitObject[6],
 						duration: duration,
 						repeats: hitObject[6],
 						draw: function () {
@@ -164,12 +164,10 @@ function draw () {
 								angleMode(DEGREES);
 								rotate(this.rotation);
 								strokeWeight(r/10);
-								let repeats = Math.abs(Math.floor((this.endTime-currentTime)*this.repeats/this.duration));
+								let progression = (this.endTime-currentTime)/this.duration;
+								let progressionF = Math.floor(Math.abs(progression));
 								ellipse(
-									(repeats % 2 === 1 ?
-										(this.endTime-currentTime)*this.repeats/this.duration*this.length-this.length*repeats :
-										this.length*(repeats+1)-(this.endTime-currentTime)*this.repeats/this.duration*this.length
-									),
+									progressionF % 2 === 0 ? this.length*(progressionF+1)-progression*this.length : progression*this.length-this.length*(progressionF),
 									0, r);
 								pop();
 							}
