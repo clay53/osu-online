@@ -89,6 +89,8 @@ function draw () {
 			let type = hitObject[3];
 			if (type[0] === 'Circle') {
 				actions.unshift({
+					color: type[1],
+					combo: type[2],
 					x: hitObject[0],
 					y: hitObject[1],
 					time: hitObject[2],
@@ -106,9 +108,13 @@ function draw () {
 						pop();
 
 						push();
-						fill(255, 255, 255);
+						fill(this.color);
 						strokeWeight(r/20);
 						ellipse(this.x, this.y, r);
+						textAlign(CENTER, CENTER);
+						textSize(r);
+						fill(0);
+						text(this.combo, this.x, this.y+verticalTextOffset);
 						pop();
 					}
 				});
@@ -120,6 +126,7 @@ function draw () {
 					let duration = hitObject[7]/(100*currentMap.sliderMultiplier)*currentMap.timing[1];
 					actions.unshift({
 						color: type[1],
+						combo: type[2],
 						x: hitObject[0],
 						y: hitObject[1],
 						tX: tPos[0],
@@ -141,7 +148,7 @@ function draw () {
 							let r = currentMap.circleSize;
 
 							push();
-							fill(255, 255, 255);
+							fill(this.color);
 							strokeWeight(r/20);
 
 							push();
@@ -164,6 +171,10 @@ function draw () {
 								noFill();
 								strokeWeight(r/10);
 								ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt+1));
+								textAlign(CENTER, CENTER);
+								textSize(r);
+								fill(0);
+								text(this.combo, this.x, this.y+verticalTextOffset);
 								pop();
 							} else {
 								push();
@@ -173,9 +184,13 @@ function draw () {
 								strokeWeight(r/10);
 								let progression = (this.endTime-currentTime)/this.duration;
 								let progressionF = Math.floor(Math.abs(progression));
-								ellipse(
-									progressionF % 2 === 0 ? this.length*(progressionF+1)-progression*this.length : progression*this.length-this.length*(progressionF),
-									0, r);
+								translate(progressionF % 2 === 0 ? this.length*(progressionF+1)-progression*this.length : progression*this.length-this.length*(progressionF), 0);
+								rotate(-this.rotation);
+								ellipse(0, 0, r);
+								textAlign(CENTER, CENTER);
+								textSize(r);
+								fill(0);
+								text(this.combo, 0, 0+verticalTextOffset);
 								pop();
 							}
 							pop();

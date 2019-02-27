@@ -1,3 +1,4 @@
+
 function onBeatmapUpload () {
 	files = document.getElementById('beatmapUpload').files
 	for (var i = 0; i < files.length; i++) {
@@ -48,7 +49,8 @@ function onBeatmapUpload () {
 									hitObjects: [],
 									timingPoints: [],
 									colors: [],
-									currentColor: 0};
+									currentColor: 0,
+									combo: 1};
 								let lines = str.split('\r\n');
 								lines.splice(-1);
 								var currentTag;
@@ -89,8 +91,11 @@ function onBeatmapUpload () {
 										let b = typeBin;
 										if (map.mode === '0') {
 											if (b[5] === '1') {
+												map.combo = 1;
 												map.currentColor += 1 + parseInt(b.substring(3, -3), 2);
 												map.currentColor -= Math.floor((map.currentColor)/map.colors.length)*map.colors.length;
+											} else {
+												map.combo++;
 											}
 											let type = [
 												(b[7] === '1' ?
@@ -103,7 +108,8 @@ function onBeatmapUpload () {
 														)
 													)
 												),
-												map.colors[map.currentColor]
+												map.colors[map.currentColor],
+												map.combo
 											];
 											hitObject[3] = type;
 										}
