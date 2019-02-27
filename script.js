@@ -196,6 +196,41 @@ function draw () {
 							pop();
 						}
 					});
+				} else if (hitObject[5].startsWith("P|")) {
+					let tPoses = hitObject[5].substr(2).split('|');
+					let t1Pos = tPoses[0].split(':');
+					let t2Pos = tPoses[1].split(':');
+					console.log(t1Pos, t2Pos);
+					let duration = hitObject[7]/(100*currentMap.sliderMultiplier)*currentMap.timing[1];
+					actions.unshift({
+						color: type[1],
+						combo: type[2],
+						x: hitObject[0],
+						y: hitObject[1],
+						t1X: t1Pos[0],
+						t1Y: t1Pos[1],
+						t2X: t2Pos[0],
+						t2Y: t2Pos[1],
+						moved: 0,
+						time: hitObject[2],
+						endTime: hitObject[2]+duration*hitObject[6],
+						duration: duration,
+						repeats: hitObject[6],
+						draw: function () {
+							if (currentTime >= this.endTime) {
+								actions.splice(actions.indexOf(this), 1);
+							}
+							push();
+							stroke(0);
+							strokeWeight(10);
+							beginShape();
+							curveVertex(this.x, this.y);
+							curveVertex(this.t1X, this.t1Y);
+							curveVertex(this.t2X, this.t2Y);
+							endShape();
+							pop();
+						}
+					});
 				} else {
 					console.log(hitObject[5][0] + "|Slider");
 				}
