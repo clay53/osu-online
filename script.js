@@ -3,6 +3,10 @@ function setup () {
 	noLoop();
 }
 
+function windowResized () {
+	resizeCanvas(enlarge ? windowWidth : 512, enlarge ? windowHeight : 384);
+}
+
 function draw () {
 	setTimeout(redraw, 1000/(fps*fpsM));
 	var wRSmaller = width/512 < height/384;
@@ -115,6 +119,7 @@ function draw () {
 					let distY = hitObject[1]-tPos[1];
 					let duration = hitObject[7]/(100*currentMap.sliderMultiplier)*currentMap.timing[1];
 					actions.unshift({
+						color: type[1],
 						x: hitObject[0],
 						y: hitObject[1],
 						tX: tPos[0],

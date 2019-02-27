@@ -47,7 +47,8 @@ function onBeatmapUpload () {
 								var map = {
 									hitObjects: [],
 									timingPoints: [],
-									colors: []};
+									colors: [],
+									currentColor: 0};
 								let lines = str.split('\r\n');
 								lines.splice(-1);
 								var currentTag;
@@ -87,6 +88,10 @@ function onBeatmapUpload () {
 										let typeBin = ('00000000'+hitObject[3].toString(2)).slice(-8);
 										let b = typeBin;
 										if (map.mode === '0') {
+											if (b[5] === '1') {
+												map.currentColor += 1 + parseInt(b.substring(3, -3), 2);
+												map.currentColor -= Math.floor((map.currentColor)/map.colors.length)*map.colors.length;
+											}
 											let type = [
 												(b[7] === '1' ?
 													'Circle'
@@ -97,7 +102,8 @@ function onBeatmapUpload () {
 															undefined
 														)
 													)
-												)
+												),
+												map.colors[map.currentColor]
 											];
 											hitObject[3] = type;
 										}
