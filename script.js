@@ -207,10 +207,10 @@ function draw () {
 						combo: type[2],
 						x: hitObject[0],
 						y: hitObject[1],
-						t1X: t1Pos[0],
-						t1Y: t1Pos[1],
-						t2X: t2Pos[0],
-						t2Y: t2Pos[1],
+						t1X: parseInt(t1Pos[0]),
+						t1Y: parseInt(t1Pos[1]),
+						t2X: parseInt(t2Pos[0]),
+						t2Y: parseInt(t2Pos[1]),
 						moved: 0,
 						time: hitObject[2],
 						endTime: hitObject[2]+duration*hitObject[6],
@@ -220,34 +220,37 @@ function draw () {
 							if (currentTime >= this.endTime) {
 								actions.splice(actions.indexOf(this), 1);
 							}
+
+							let r = currentMap.circleSize;
+
 							push();
 							noFill();
 							stroke(0);
-							strokeWeight(10);
-							// console.log(
-							// 	[this.x, this.y],
-							// 	[this.t1X, this.t1Y],
-							// 	[this.t2X, this.t2Y]
-							// );
-							// curve(
-							// 	this.x, this.y,
-							// 	this.x, this.y,
-							// 	this.t2X, this.t2Y,
-							// 	this.t2X, this.t2Y
-							// );
-							let s = width / 4;
-							curveTightness(0);
+							strokeWeight(r/20);
 							beginShape();
+							curve(this.x, this.y);
 							curveVertex(this.x, this.y);
-							curveVertex(this.x, this.y);
-							curveVertex(s*2, s);
-							curveVertex(s * 3, s * 2);
-							curveVertex(s * 3, s * 2);
+							curveVertex(this.t1X, this.t1Y);
+							curveVertex(this.t2X, this.t2Y);
+							curveVertex(this.t2X, this.t2Y);
 							endShape();
-							ellipse(this.x, this.y, 20);
-							ellipse(this.t1X, this.t1Y, 20);
-							ellipse(this.t2X, this.t2Y, 20);
+							
+							fill(this.color);
+							ellipse(this.x, this.y, r);
+							ellipse(this.t2X, this.t2Y, r);
 							pop();
+
+							if (currentTime <= this.time) {
+								push();
+								noFill();
+								strokeWeight(r/10);
+								ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt+1));
+								textAlign(CENTER, CENTER);
+								textSize(r);
+								fill(0);
+								text(this.combo, this.x, this.y+verticalTextOffset);
+								pop();
+							}
 						}
 					});
 				} else {
