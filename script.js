@@ -221,13 +221,20 @@ function draw () {
 								actions.splice(actions.indexOf(this), 1);
 							}
 							push();
+							noFill();
 							stroke(0);
 							strokeWeight(10);
 							beginShape();
 							curveVertex(this.x, this.y);
+							curveVertex(this.x, this.y);
+							curveVertex(this.t1X, this.t1Y);
 							curveVertex(this.t1X, this.t1Y);
 							curveVertex(this.t2X, this.t2Y);
+							curveVertex(this.t2X, this.t2Y);
 							endShape();
+							ellipse(this.x, this.y, 20);
+							ellipse(this.t1X, this.t1Y, 20);
+							ellipse(this.t2X, this.t2Y, 20);
 							pop();
 						}
 					});
