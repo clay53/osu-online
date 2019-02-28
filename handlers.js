@@ -137,7 +137,7 @@ function onBeatmapUpload () {
 											try {
 												map.hasBG = true;
 												map.background = lines[parseInt(i)+1].split(',')[2].slice(1, -1);
-											} catch {
+											} catch (err) {
 												map.hasBG = false;
 											}
 										}
