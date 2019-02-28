@@ -200,7 +200,7 @@ function draw () {
 					let tPoses = hitObject[5].substr(2).split('|');
 					let t1Pos = tPoses[0].split(':');
 					let t2Pos = tPoses[1].split(':');
-					console.log(t1Pos, t2Pos);
+					//console.log(t1Pos, t2Pos);
 					let duration = hitObject[7]/(100*currentMap.sliderMultiplier)*currentMap.timing[1];
 					actions.unshift({
 						color: type[1],
@@ -224,13 +224,25 @@ function draw () {
 							noFill();
 							stroke(0);
 							strokeWeight(10);
+							// console.log(
+							// 	[this.x, this.y],
+							// 	[this.t1X, this.t1Y],
+							// 	[this.t2X, this.t2Y]
+							// );
+							// curve(
+							// 	this.x, this.y,
+							// 	this.x, this.y,
+							// 	this.t2X, this.t2Y,
+							// 	this.t2X, this.t2Y
+							// );
+							let s = width / 4;
+							curveTightness(0);
 							beginShape();
 							curveVertex(this.x, this.y);
 							curveVertex(this.x, this.y);
-							curveVertex(this.t1X, this.t1Y);
-							curveVertex(this.t1X, this.t1Y);
-							curveVertex(this.t2X, this.t2Y);
-							curveVertex(this.t2X, this.t2Y);
+							curveVertex(s*2, s);
+							curveVertex(s * 3, s * 2);
+							curveVertex(s * 3, s * 2);
 							endShape();
 							ellipse(this.x, this.y, 20);
 							ellipse(this.t1X, this.t1Y, 20);
