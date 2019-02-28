@@ -228,7 +228,7 @@ function draw () {
 							stroke(0);
 							strokeWeight(r/20);
 							beginShape();
-							curve(this.x, this.y);
+							curveVertex(this.x, this.y);
 							curveVertex(this.x, this.y);
 							curveVertex(this.t1X, this.t1Y);
 							curveVertex(this.t2X, this.t2Y);
