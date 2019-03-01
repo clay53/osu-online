@@ -292,9 +292,9 @@ function draw () {
 
 						rect(
 							this.x*(this.w),
-							384-this.h*-(this.time-currentTime)/(currentMap.preempt)*384,
+							384-this.h-(this.time-currentTime)/(currentMap.preempt)*384,
 							this.w,
-							(this.endTime-this.time+currentMap.preempt)/384
+							(this.endTime-this.time)*(currentMap.preempt/currentMap.circleSize/384)
 						);
 					}
 				})
