@@ -19,7 +19,7 @@ function draw () {
 			i = parseInt(i);
 			line(0, (i+1)*spacing, width, (i+1)*spacing);
 			let map = beatmapSet.maps[i];
-			if (map.mode != '0') {
+			if (map.mode !== '0' && map.mode !== '3') {
 				push();
 				textAlign(RIGHT, TOP);
 				text("Mode not yet supported", width, i*spacing+offset);
@@ -256,6 +256,17 @@ function draw () {
 				} else {
 					console.log(hitObject[5][0] + "|Slider");
 				}
+			} else if (type[0] === 'Tap') {
+				actions.unshift({
+					x: hitObject[0],
+					y: hitObject[1],
+					time: hitObject[2],
+					draw: function () {
+						if (currentTime >= this.endTime) {
+							actions.splice(actions.indexOf(this), 1);
+						}
+					}
+				});
 			} else {
 				console.log(type[0]);
 			}

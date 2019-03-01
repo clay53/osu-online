@@ -89,30 +89,41 @@ function onBeatmapUpload () {
 										}
 										let typeBin = ('00000000'+hitObject[3].toString(2)).slice(-8);
 										let b = typeBin;
-										if (map.mode === '0') {
-											if (b[5] === '1') {
-												map.combo = 1;
-												map.currentColor += 1 + parseInt(b.substring(3, -3), 2);
-												map.currentColor -= Math.floor((map.currentColor)/map.colors.length)*map.colors.length;
-											} else {
-												map.combo++;
-											}
-											let type = [
+										hitObject.typeBin = b;
+										if (b[5] === '1') {
+											map.combo = 1;
+											map.currentColor += 1 + parseInt(b.substring(3, -3), 2);
+											map.currentColor -= Math.floor((map.currentColor)/map.colors.length)*map.colors.length;
+										} else {
+											map.combo++;
+										}
+										let type = [
+											(map.mode === '0' ?
 												(b[7] === '1' ?
-													'Circle'
-													: (b[6] === '1' ?
+													'Circle':
+													(b[6] === '1' ?
 														'Slider':
 														(b[4] === '1' ?
 															'Spinner' :
 															undefined
 														)
 													)
-												),
-												map.colors[map.currentColor],
-												map.combo
-											];
-											hitObject[3] = type;
-										}
+												) :
+												(map.mode === '3' ?
+													(b[0] === '1' ?
+														'Hold':
+														(b[7] === '1' ?
+															'Tap':
+															undefined
+														)
+													):
+													undefined
+												)
+											),
+											map.colors[map.currentColor],
+											map.combo
+										];
+										hitObject[3] = type;
 										map.hitObjects.push(hitObject);
 									} else if (currentTag === 'Difficulty') {
 										var tags = {
