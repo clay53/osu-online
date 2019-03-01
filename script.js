@@ -257,14 +257,17 @@ function draw () {
 					console.log(hitObject[5][0] + "|Slider");
 				}
 			} else if (type[0] === 'Tap') {
+				console.log(Math.floor(hitObject[0]/(512/currentMap.circleSize)));
 				actions.unshift({
-					x: hitObject[0],
+					x: Math.floor(hitObject[0]/(512/currentMap.circleSize)),
 					y: hitObject[1],
 					time: hitObject[2],
 					draw: function () {
 						if (currentTime >= this.endTime) {
 							actions.splice(actions.indexOf(this), 1);
 						}
+						//console.log(this.x, this.y);
+						rect(this.x*(512/currentMap.circleSize), this.y, 512/currentMap.circleSize, 384/currentMap.circleSize);
 					}
 				});
 			} else {

@@ -129,7 +129,7 @@ function onBeatmapUpload () {
 										var tags = {
 											"CircleSize:" : function (sub) {
 												let CS = parseInt(sub);
-												map.circleSize = 54.4-4.48*CS;
+												map.circleSize = map.mode === '0' ? 54.4-4.48*CS : CS;
 											}, "ApproachRate:": function (sub) {
 												let AR = parseFloat(sub);
 												map.preempt = AR < 5 ? 1200+600*(5-AR)/5 : (AR === 5 ? 1200 : 1200+750*(AR-5)/5);
