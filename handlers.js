@@ -1,4 +1,3 @@
-
 function onBeatmapUpload () {
 	files = document.getElementById('beatmapUpload').files
 	for (var i = 0; i < files.length; i++) {

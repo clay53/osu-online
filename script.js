@@ -292,9 +292,9 @@ function draw () {
 
 						rect(
 							this.x*(this.w),
-							384-this.h-(this.endTime-currentTime)/currentMap.preempt*384,
+							384-this.h*-(this.time-currentTime)/(currentMap.preempt)*384,
 							this.w,
-							this.h
+							(this.endTime-this.time+currentMap.preempt)/384
 						);
 					}
 				})
@@ -303,12 +303,24 @@ function draw () {
 			}
 			currentMap.hitObjects.shift();
 		}
-		for (var i in actions) {
+		push();
+		scale(s, s);
+		translate(wRSmaller ? (width-512*s)/2 : 0, wRSmaller ? 0 : (height-384*s)/2);
+		if (currentMap.mode === '3') {
 			push();
-			scale(s, s);
-			translate(wRSmaller ? (width-512*s)/2 : 0, wRSmaller ? 0 : (height-384*s)/2);
-			actions[i].draw();
+			noStroke();
+			fill(255, 0, 0);
+			rect(
+				0,
+				384-384/currentMap.circleSize/4,
+				512/3,
+				384/currentMap.circleSize/4
+			);
 			pop();
 		}
+		for (var i in actions) {
+			actions[i].draw();
+		}
+		pop();
 	}
 }
