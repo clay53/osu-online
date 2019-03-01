@@ -257,19 +257,47 @@ function draw () {
 					console.log(hitObject[5][0] + "|Slider");
 				}
 			} else if (type[0] === 'Tap') {
-				console.log(Math.floor(hitObject[0]/(512/currentMap.circleSize)));
 				actions.unshift({
 					x: Math.floor(hitObject[0]/(512/currentMap.circleSize)),
 					y: hitObject[1],
-					time: hitObject[2],
+					time: hitObject[2]-currentMap.preempt,
+					endTime: hitObject[2],
+					w: 512/currentMap.circleSize/3,
+					h: 384/currentMap.circleSize/4,
 					draw: function () {
 						if (currentTime >= this.endTime) {
 							actions.splice(actions.indexOf(this), 1);
 						}
-						//console.log(this.x, this.y);
-						rect(this.x*(512/currentMap.circleSize), this.y, 512/currentMap.circleSize, 384/currentMap.circleSize);
+
+						rect(
+							this.x*(this.w),
+							384-this.h-(this.endTime-currentTime)/currentMap.preempt*384,
+							this.w,
+							this.h
+						);
 					}
 				});
+			} else if (type[0] === 'Hold') {
+				actions.unshift({
+					x: Math.floor(hitObject[0]/(512/currentMap.circleSize)),
+					y: hitObject[1],
+					time: hitObject[2]-currentMap.preempt,
+					endTime: hitObject[2],
+					w: 512/currentMap.circleSize/3,
+					h: 384/currentMap.circleSize/4,
+					draw: function() {
+						if (currentTime >= this.endTime) {
+							actions.splice(actions.indexOf(this), 1);
+						}
+
+						rect(
+							this.x*(this.w),
+							384-this.h-(this.endTime-currentTime)/currentMap.preempt*384,
+							this.w,
+							this.h
+						);
+					}
+				})
 			} else {
 				console.log(type[0]);
 			}
