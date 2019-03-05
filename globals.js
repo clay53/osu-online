@@ -1,3 +1,5 @@
+var c;
+
 var beatmapSet = {};
 var scene = 'menu';
 var currentMap;

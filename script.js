@@ -1,5 +1,5 @@
 function setup () {
-	createCanvas(enlarge ? windowWidth : 512, enlarge ? windowHeight : 384);
+	c = createCanvas(enlarge ? windowWidth : 512, enlarge ? windowHeight : 384);
 	noLoop();
 }
 
@@ -10,7 +10,7 @@ function windowResized () {
 function draw () {
 	setTimeout(redraw, 1000/(fps*fpsM));
 	var wRSmaller = width/512 < height/384;
-	var s = width/512 < height/384 ? width/512 : height/384;
+	var s = (width/512 < height/384 ? width/512 : height/384);
 	if (scene === 'menu') {
 		background(255*0.95);
 		let spacing = 30;
@@ -104,7 +104,7 @@ function draw () {
 						push();
 						fill(255, 255, 255, 0);
 						strokeWeight(r/10);
-						ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt+1));
+						ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt*ACScale+1));
 						pop();
 
 						push();
@@ -170,7 +170,7 @@ function draw () {
 								push();
 								noFill();
 								strokeWeight(r/10);
-								ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt+1));
+								ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt*ACScale+1));
 								textAlign(CENTER, CENTER);
 								textSize(r);
 								fill(0);
@@ -205,12 +205,28 @@ function draw () {
 					actions.unshift({
 						color: type[1],
 						combo: type[2],
-						x: hitObject[0],
-						y: hitObject[1],
-						t1X: parseInt(t1Pos[0]),
-						t1Y: parseInt(t1Pos[1]),
-						t2X: parseInt(t2Pos[0]),
-						t2Y: parseInt(t2Pos[1]),
+						points: [
+							createVector(
+								hitObject[0],
+								hitObject[1]
+							),
+							createVector(
+								hitObject[0],
+								hitObject[1]
+							),
+							createVector(
+								parseInt(t1Pos[0]),
+								parseInt(t1Pos[1])
+							),
+							createVector(
+								parseInt(t2Pos[0]),
+								parseInt(t2Pos[1])
+							),
+							createVector(
+								parseInt(t2Pos[0]),
+								parseInt(t2Pos[1])
+							)
+						],
 						moved: 0,
 						time: hitObject[2],
 						endTime: hitObject[2]+duration*hitObject[6],
@@ -227,28 +243,38 @@ function draw () {
 							noFill();
 							stroke(0);
 							strokeWeight(r/20);
-							beginShape();
-							curveVertex(this.x, this.y);
-							curveVertex(this.x, this.y);
-							curveVertex(this.t1X, this.t1Y);
-							curveVertex(this.t2X, this.t2Y);
-							curveVertex(this.t2X, this.t2Y);
-							endShape();
+							curveA(this.points);
 							
 							fill(this.color);
-							ellipse(this.x, this.y, r);
-							ellipse(this.t2X, this.t2Y, r);
+							ellipse(this.points[0].x, this.points[0].y, r);
+							ellipse(this.points[4].x, this.points[4].y, r);
 							pop();
 
 							if (currentTime <= this.time) {
 								push();
 								noFill();
 								strokeWeight(r/10);
-								ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt+1));
+								ellipse(this.points[0].x, this.points[0].y, r*((this.time-currentTime)/currentMap.preempt*ACScale+1));
 								textAlign(CENTER, CENTER);
 								textSize(r);
 								fill(0);
-								text(this.combo, this.x, this.y+verticalTextOffset);
+								text(this.combo, this.points[0].x, this.points[0].y+verticalTextOffset);
+								pop();
+							} else {
+								push();
+								fill(this.color);
+								strokeWeight(r/20);
+								let progression = (this.endTime-currentTime)/this.duration;
+								let progressionF = Math.floor(Math.abs(progression));
+								let t = progressionF % 2 === 1 ? (progressionF+1)-progression : progression-(progressionF);
+								if (t > 0) {
+									let slidePos = curveAPoint(this.points, t);
+									ellipse(slidePos.x, slidePos.y, r);
+									textAlign(CENTER, CENTER);
+									textSize(r);
+									fill(0);
+									text(this.combo, slidePos.x, slidePos.y+verticalTextOffset);
+								}
 								pop();
 							}
 						}
