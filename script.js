@@ -57,7 +57,7 @@ function draw () {
 	} else if (scene === 'game') {
 		let bg = beatmapSet.backgroundFiles[currentMap.background];
 		if (!songPlaying) {
-			beatmapSet.audioFiles[currentMap.audioName].audio.setVolume(0.3);
+			beatmapSet.audioFiles[currentMap.audioName].audio.setVolume(0.1);
 			beatmapSet.audioFiles[currentMap.audioName].audio.play();
 			if (currentMap.hasBG && showBG && bg.type === 'video') {
 				bg.vid.play();
