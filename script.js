@@ -268,7 +268,7 @@ function draw () {
 								let progressionF = Math.floor(Math.abs(progression));
 								let t = progressionF % 2 === 1 ? (progressionF+1)-progression : progression-(progressionF);
 								if (t > 0) {
-									let slidePos = curveAPoint(this.points, t);
+									let slidePos = smoothCurveAPoint(this.points, t);
 									ellipse(slidePos.x, slidePos.y, r);
 									textAlign(CENTER, CENTER);
 									textSize(r);
@@ -349,4 +349,13 @@ function draw () {
 		}
 		pop();
 	}
+
+	push();
+	textAlign(LEFT, BOTTOM);
+	fpsTimings.push(1/((millis()-lastDraw)/1000));
+	fpsTimings.shift();
+	avgFPS = (function (arr) {let sum = 0; for (let i in arr) {sum += arr[i];} return sum/arr.length;})(fpsTimings);
+	text("FPS: " + Math.round(avgFPS*100)/100, 0, 0, width, height);
+	pop();
+	lastDraw = millis();
 }
