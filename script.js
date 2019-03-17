@@ -24,7 +24,7 @@ function draw () {
 				textAlign(RIGHT, TOP);
 				text("Mode not yet supported", width, i*spacing+offset);
 				pop();
-			} else if (map.hasBG && showBG && !beatmapSet.backgroundFiles[map.background].loaded) {
+			} else if (map.hasBG && backgroundDim < 1 && !beatmapSet.backgroundFiles[map.background].loaded) {
 				push();
 				textAlign(RIGHT, TOP);
 				text("Loading Background...", width, i*spacing+offset);
@@ -59,23 +59,23 @@ function draw () {
 		if (!songPlaying) {
 			beatmapSet.audioFiles[currentMap.audioName].audio.setVolume(0.1);
 			beatmapSet.audioFiles[currentMap.audioName].audio.play();
-			if (currentMap.hasBG && showBG && bg.type === 'video') {
+			if (currentMap.hasBG && backgroundDim < 1 && bg.type === 'video') {
 				bg.vid.play();
 			}
 			songPlaying = true;
 		}
 		push();
 		imageMode(CENTER);
-		if (currentMap.hasBG && showBG && bg.type === 'image') {
-			let bgS = width/bg.img.width > height/bg.img.height ? width/bg.img.width : height/bg.img.height;
-			background(0);
-			image(bg.img, width/2, height/2, bg.img.width*bgS, bg.img.height*bgS);
-		} else if (currentMap.hasBG && showBG && bg.type === 'video') {
-			let bgS = width/bg.vid.width > height/bg.vid.height ? width/bg.vid.width : height/bg.vid.height;
-			background(0);
-			image(bg.vid, width/2, height/2, bg.vid.width*bgS, bg.vid.height*bgS);
-		} else {
-			background(255*0.95);
+		background(0);
+		if (currentMap.hasBG && backgroundDim < 1) {
+			let bgC = bg.type === 'image' ? bg.img : bg.vid;
+			let bgS = width/bgC.width > height/bgC.height ? width/bgC.width : height/bgC.height;
+			image(bgC, width/2, height/2, bgC.width*bgS, bgC.height*bgS);
+			push();
+			noStroke();
+			fill(0, 0, 0, 255*backgroundDim);
+			rect(0, 0, width, height);
+			pop();
 		}
 		pop();
 		currentTime = beatmapSet.audioFiles[currentMap.audioName].audio.currentTime()*1000;
@@ -103,12 +103,14 @@ function draw () {
 
 						push();
 						fill(255, 255, 255, 0);
+						stroke(255);
 						strokeWeight(r/10);
 						ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt*ACScale+1));
 						pop();
 
 						push();
 						fill(this.color);
+						stroke(255);
 						strokeWeight(r/20);
 						ellipse(this.x, this.y, r);
 						textAlign(CENTER, CENTER);
@@ -149,6 +151,7 @@ function draw () {
 
 							push();
 							fill(this.color);
+							stroke(255);
 							strokeWeight(r/20);
 
 							push();
@@ -169,6 +172,7 @@ function draw () {
 							if (currentTime <= this.time) {
 								push();
 								noFill();
+								stroke(255);
 								strokeWeight(r/10);
 								ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt*ACScale+1));
 								textAlign(CENTER, CENTER);
@@ -186,12 +190,10 @@ function draw () {
 								let progressionF = Math.floor(Math.abs(progression));
 								translate(progressionF % 2 === 0 ? this.length*(progressionF+1)-progression*this.length : progression*this.length-this.length*(progressionF), 0);
 								rotate(-this.rotation);
-								ellipse(0, 0, r);
-								textAlign(CENTER, CENTER);
-								textSize(r);
-								fill(0);
-								text(this.combo, 0, 0+verticalTextOffset);
-								pop();
+								noFill();
+								stroke(255);
+								strokeWeight(r/10);
+								ellipse(0, 0, r*ACScale);
 							}
 							pop();
 						}
@@ -241,7 +243,7 @@ function draw () {
 
 							push();
 							noFill();
-							stroke(0);
+							stroke(255);
 							strokeWeight(r/20);
 							curveA(this.points);
 							
@@ -253,6 +255,7 @@ function draw () {
 							if (currentTime <= this.time) {
 								push();
 								noFill();
+								stroke(255);
 								strokeWeight(r/10);
 								ellipse(this.points[0].x, this.points[0].y, r*((this.time-currentTime)/currentMap.preempt*ACScale+1));
 								textAlign(CENTER, CENTER);
@@ -268,12 +271,11 @@ function draw () {
 								let progressionF = Math.floor(Math.abs(progression));
 								let t = progressionF % 2 === 1 ? (progressionF+1)-progression : progression-(progressionF);
 								if (t > 0) {
-									let slidePos = smoothCurveAPoint(this.points, t);
-									ellipse(slidePos.x, slidePos.y, r);
-									textAlign(CENTER, CENTER);
-									textSize(r);
-									fill(0);
-									text(this.combo, slidePos.x, slidePos.y+verticalTextOffset);
+									let slidePos = smoothCurveAPoint(this.points, t, 1);
+									noFill();
+									stroke(255);
+									strokeWeight(r/10);
+									ellipse(slidePos.x, slidePos.y, r*ACScale);
 								}
 								pop();
 							}
