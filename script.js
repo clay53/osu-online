@@ -15,7 +15,7 @@ function draw () {
 		background(255*0.95);
 		let spacing = 30;
 		let offset = 2.5;
-		for (var i in beatmapSet.maps) {
+		for (let i in beatmapSet.maps) {
 			i = parseInt(i);
 			line(0, (i+1)*spacing, width, (i+1)*spacing);
 			let map = beatmapSet.maps[i];
@@ -323,7 +323,7 @@ function draw () {
 							(this.endTime-this.time)*(currentMap.preempt/currentMap.circleSize/384)
 						);
 					}
-				})
+				});
 			} else {
 				console.log(type[0]);
 			}
@@ -344,7 +344,7 @@ function draw () {
 			);
 			pop();
 		}
-		for (var i in actions) {
+		for (let i in actions) {
 			actions[i].draw();
 		}
 		pop();

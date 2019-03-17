@@ -13,9 +13,9 @@ var lastDraw = 0;
 function resetToMenu() {
     try {
         beatmapSet.audioFiles[currentMap.audioName].audio.stop();
-    } catch (err) {console.log("Warn: ", err)}
+    } catch (err) {console.log("Warn: ", err);}
     try { 
         beatmapSet.backgroundFiles[currentMap.background].remove();
-    } catch (err) {console.log("Warn: ", err)}
+    } catch (err) {console.log("Warn: ", err);}
     scene = 'menu';
 }

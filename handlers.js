@@ -1,5 +1,5 @@
 function onBeatmapUpload () {
-	files = document.getElementById('beatmapUpload').files
+	files = document.getElementById('beatmapUpload').files;
 	for (var i = 0; i < files.length; i++) {
 		let file = files[i];
 		if (file.name.split('.').splice(-1)[0] === "osz") {
@@ -58,30 +58,30 @@ function onBeatmapUpload () {
 
 									// Interpret line
 									if (currentTag === 'General') {
-										var tags = {
+										let tags = {
 											"AudioFilename: ": "audioName",
 											"Mode: ": "mode",
-										}
-										for (var tag in tags) {
+										};
+										for (let tag in tags) {
 											if (line.startsWith(tag)) {
 												map[tags[tag]] = line.substring(tag.length);
 											}
 										}
 									} else if (currentTag === 'Metadata') {
-										var tags = {
+										let tags = {
 											"Title:": "title",
 											"Artist:": "artist",
 											"Creator:": "creator",
 											"Version:": "version"
-										}
-										for (var tag in tags) {
+										};
+										for (let tag in tags) {
 											if (line.startsWith(tag)) {
 												map[tags[tag]] = line.substring(tag.length);
 											}
 										}
 									} else if (currentTag === 'HitObjects') {
 										let hitObject = line.split(',');
-										for (var i in hitObject) {
+										for (let i in hitObject) {
 											if (parseInt(hitObject[i]) >= 0) {
 												hitObject[i] = parseInt(hitObject[i]);
 											}
@@ -125,7 +125,7 @@ function onBeatmapUpload () {
 										hitObject[3] = type;
 										map.hitObjects.push(hitObject);
 									} else if (currentTag === 'Difficulty') {
-										var tags = {
+										let tags = {
 											"CircleSize:" : function (sub) {
 												let CS = parseInt(sub);
 												map.circleSize = map.mode === '0' ? 54.4-4.48*CS : CS;
@@ -136,8 +136,8 @@ function onBeatmapUpload () {
 											}, "SliderMultiplier:": function (sub) {
 												map.sliderMultiplier = parseFloat(sub);
 											}
-										}
-										for (var i in tags) {
+										};
+										for (let i in tags) {
 											if (line.startsWith(i)) {
 												tags[i](line.substring(i.length));
 											}
@@ -154,7 +154,7 @@ function onBeatmapUpload () {
 									} else if (currentTag === 'TimingPoints') {
 										var point = line.split(',');
 										if (point.length > 1) {
-											for (var i in point) {
+											for (let i in point) {
 												point[i] = parseFloat(point[i]);
 											}
 											if (point[1] < 0) {
@@ -167,7 +167,7 @@ function onBeatmapUpload () {
 									} else if (currentTag === 'Colours') {
 											var color = line.split(',');
 											if (color.length === 3) {
-												for (var i in color) {
+												for (let i in color) {
 													i = parseInt(i);
 													let c = color[i];
 													if (i === 0) {
@@ -197,7 +197,7 @@ function onBeatmapUpload () {
 						}
 					}
 				});
-			}
+			};
 		}
 	}
 }
