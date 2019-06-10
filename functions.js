@@ -82,6 +82,10 @@ function curveALength (vectors, returnArray = false, dM = 20) {
 
 function curveAPoint (vectors, t, dM = 20, smooth = false) {
   t = 1-t;
+	if (t < 0) {
+		t = 0;
+	}
+	
 	let curveALengths = curveALength(vectors, true, dM);
   let _curveALength = curveALengths.reduce(function (a, b) {return a+b;});
   let curveALengthsN = [];

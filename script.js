@@ -1,6 +1,6 @@
 function setup () {
 	c = createCanvas(enlarge ? windowWidth : 512, enlarge ? windowHeight : 384);
-	noLoop();
+	//noLoop();
 }
 
 function windowResized () {
@@ -8,7 +8,7 @@ function windowResized () {
 }
 
 function draw () {
-	setTimeout(redraw, 1000/(fps*fpsM));
+	//setTimeout(redraw, 1000/(fps*fpsM));
 	var wRSmaller = width/512 < height/384;
 	var s = (width/512 < height/384 ? width/512 : height/384);
 	if (scene === 'menu') {
@@ -188,12 +188,13 @@ function draw () {
 								strokeWeight(r/10);
 								let progression = (this.endTime-currentTime)/this.duration;
 								let progressionF = Math.floor(Math.abs(progression));
-								translate(progressionF % 2 === 0 ? this.length*(progressionF+1)-progression*this.length : progression*this.length-this.length*(progressionF), 0);
+								translate(progressionF % 2 === 1-(this.repeats%2) ? this.length*(progressionF+1)-progression*this.length : progression*this.length-this.length*(progressionF), 0);
 								rotate(-this.rotation);
 								noFill();
 								stroke(255);
 								strokeWeight(r/10);
 								ellipse(0, 0, r*ACScale);
+								pop();
 							}
 							pop();
 						}
@@ -269,7 +270,7 @@ function draw () {
 								strokeWeight(r/20);
 								let progression = (this.endTime-currentTime)/this.duration;
 								let progressionF = Math.floor(Math.abs(progression));
-								let t = progressionF % 2 === 1 ? (progressionF+1)-progression : progression-(progressionF);
+								let t = progressionF % 2 === (this.repeats%2) ? (progressionF+1)-progression : progression-(progressionF);
 								if (t > 0) {
 									let slidePos = smoothCurveAPoint(this.points, t, 1);
 									noFill();

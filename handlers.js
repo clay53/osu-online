@@ -38,7 +38,7 @@ function onBeatmapUpload () {
 							file.async('base64').then((base64) => {
 								beatmapSet.backgroundFiles[file.name].vid = createVideo('data:video/' + format + ';base64,' + base64, (vid) => {
 									beatmapSet.backgroundFiles[file.name].vid.hide();
-									beatmapSet.backgroundFiles[file.name].vid.volume(0);
+									beatmapSet.backgroundFiles[file.name].vid.volume(0);b
 									beatmapSet.backgroundFiles[file.name].loaded = true;
 								});
 							});
