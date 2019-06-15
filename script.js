@@ -17,8 +17,19 @@ function draw () {
 		let offset = 2.5;
 		for (let i in beatmapSet.maps) {
 			i = parseInt(i);
-			line(0, (i+1)*spacing, width, (i+1)*spacing);
 			let map = beatmapSet.maps[i];
+
+			// Verify background
+			for (let i in map.possibleBackgrounds) {
+				if (beatmapSet.backgroundFiles[map.possibleBackgrounds[i]] !== undefined) {
+					map.background = map.possibleBackgrounds[i];
+					map.hasBG = true;
+				}
+			}
+			map.possibleBackgrounds = [];
+
+			// Display
+			line(0, (i+1)*spacing, width, (i+1)*spacing);
 			if (map.mode !== '0' && map.mode !== '3') {
 				push();
 				textAlign(RIGHT, TOP);

@@ -8,7 +8,6 @@ function onBeatmapUpload () {
 			var fileReader = new FileReader();
 			fileReader.readAsBinaryString(file);
 			fileReader.onload = () => {
-				var new_beatmap = new JSZip();
 				JSZip.loadAsync(fileReader.result).then((zip) => {
 					resetToMenu();
 					beatmapSet = {
@@ -144,12 +143,13 @@ function onBeatmapUpload () {
 										}
 									} else if (currentTag === 'Events') {
 										if (line.startsWith('//Background and Video events')) {
+											map.possibleBackgrounds = [];
 											try {
-												map.hasBG = true;
-												map.background = lines[parseInt(i)+1].split(',')[2].slice(1, -1);
-											} catch (err) {
-												map.hasBG = false;
-											}
+												map.possibleBackgrounds.push(lines[parseInt(i)+1].split(',')[2].slice(1, -1));
+											} catch (err) {}
+											try {
+												map.possibleBackgrounds.push(lines[parseInt(i)+2].split(',')[2].slice(1, -1));
+											} catch (err) {}
 										}
 									} else if (currentTag === 'TimingPoints') {
 										var point = line.split(',');
