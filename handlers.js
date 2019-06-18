@@ -10,7 +10,7 @@ function onBeatmapUpload () {
 			fileReader.onload = () => {
 				JSZip.loadAsync(fileReader.result).then((zip) => {
 					resetToMenu();
-					beatmapSet = {
+					var beatmapSet = {
 						maps: [],
 						audioFiles: {},
 						backgroundFiles: {}
@@ -196,6 +196,7 @@ function onBeatmapUpload () {
 							console.log("Unkown format: " + format);
 						}
 					}
+					beatmapSets.push(beatmapSet);
 				});
 			};
 		}
