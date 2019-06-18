@@ -4,3 +4,4 @@ var backgroundDim = 0.5;
 var enlarge = false;
 var verticalTextOffset = 2.5;
 var ACScale = 2;
+var disableVideo = false;
