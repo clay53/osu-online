@@ -13,6 +13,76 @@ function draw () {
 	var s = (width/512 < height/384 ? width/512 : height/384);
 	if (scene === 'menu') {
 		background(255*0.95);
+		
+		let circleX = menuCircleClicked ? width/3 : width/2;
+		let mouseOverCircle = Math.sqrt(Math.pow(mouseX-circleX, 2)+Math.pow(mouseY-height/2, 2)) <= 155;
+
+		push();
+		if (menuCircleClicked) {
+			// Draw Map Select Button
+			let mouseOverMapSelect = (
+				!mouseOverCircle &&
+				mouseX >= width/4 &&
+				mouseX <= width/4*3.75 &&
+				mouseY >= height/2-62.5 &&
+				mouseY <= height/2-62.5+50
+			);
+			fill(mouseOverMapSelect ? (mouseIsPressed ? [255, 124, 183] : [255, 132, 187]) : [255, 153, 204]);
+			stroke(255);
+			strokeWeight(5);
+			rect(width/4, height/2-62.5, width/4*2.75, 50);
+
+			textSize(30);
+			textAlign(RIGHT, CENTER);
+			noStroke();
+			fill(255);
+			text("Map Select", width/4*3.7, height/2-62.5+50/2)
+			if (mouseOverMapSelect && mouseIsPressed && !mouseDownLastFrame) {
+				resetToSelect();
+				mouseDownLastFrame = true;
+			}
+
+			// Draw Options Button
+			let mouseOverOptions = (
+				!mouseOverCircle &&
+				mouseX >= width/4 &&
+				mouseX <= width/4*3.75 &&
+				mouseY >= height/2+12.5 &&
+				mouseY <= height/2+12.5+50
+			);
+			fill(mouseOverOptions ? (mouseIsPressed ? [255, 124, 183] : [255, 132, 187]) : [255, 153, 204]);
+			stroke(255);
+			strokeWeight(5);
+			rect(width/4, height/2+12.5, width/4*2.75, 50);
+
+			textSize(30);
+			textAlign(RIGHT, CENTER);
+			noStroke();
+			fill(255);
+			text("Options", width/4*3.7, height/2+12.5+50/2)
+			if (mouseOverOptions && mouseIsPressed && !mouseDownLastFrame) {
+				toOptions();
+				mouseDownLastFrame = true;
+			}
+		}
+		pop();
+
+		push();
+		fill(mouseOverCircle ? (mouseIsPressed ? [255, 124, 183] : [255, 132, 187]) : [255, 153, 204]);
+		stroke(255);
+		strokeWeight(5);
+		ellipse(circleX, height/2, 300);
+
+		textSize(45);
+		textAlign(CENTER, CENTER);
+		noStroke();
+		fill(255);
+		text("Osu!Online", circleX, height/2);
+		if (mouseOverCircle && mouseIsPressed && !mouseDownLastFrame) {
+			menuCircleClicked = !menuCircleClicked;
+			mouseDownLastFrame = true;
+		}
+		pop();
 	} else if (scene === 'select') {
 		background(255*0.95);
 		if (selectedMap && selectedMap.hasBG && typeof(selectedMap.pictureBackground) !== "undefined" && selectedMap.pictureBackground.loaded) {

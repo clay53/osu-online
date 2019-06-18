@@ -14,6 +14,13 @@ var lastDraw = 0;
 
 var mouseDownLastFrame = false;
 
+var menuCircleClicked = false;
+
+function toMenu() {
+    menuCircleClicked = false;
+    scene = 'menu';
+}
+
 function resetToSelect() {
     try {
         currentMap.audio.audio.stop();
