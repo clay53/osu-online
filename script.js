@@ -134,6 +134,8 @@ function draw () {
 		}
 		push();
 		imageMode(CENTER);
+
+		// Draw Background
 		background(0);
 		if (currentMap.hasBG && backgroundDim < 1) {
 			let bgC = bg.type === 'image' ? bg.img : bg.vid;
@@ -146,11 +148,21 @@ function draw () {
 			pop();
 		}
 		pop();
-		currentTime = currentMap.audio.audio.currentTime()*1000;
+		
+		currentTime = currentMap.audio.audio.currentTime()*1000; // set current time
+
+		// Draw progression bar
+		push();
+		progressionBarMethods[progressionBarMethod]();
+		pop();
+
+		// Do timing points
 		while (currentMap.timingPoints.length > 0 && currentMap.timingPoints[0][0]-currentMap.preempt <= currentTime) {
 			currentMap.timing = currentMap.timingPoints[0];
 			currentMap.timingPoints.shift();
 		}
+
+		// Add hitObjects
 		while (currentMap.hitObjects.length > 0 && currentMap.hitObjects[0][2]-currentMap.preempt <= currentTime) {
 			//let latency = currentMap.audio.audio.currentTime()*1000-currentMap.hitObjects[0][2];
 			let hitObject = currentMap.hitObjects[0];
@@ -400,6 +412,8 @@ function draw () {
 			}
 			currentMap.hitObjects.shift();
 		}
+
+		// Draw hitObjects
 		push();
 		scale(s, s);
 		translate(wRSmaller ? (width-512*s)/2 : 0, wRSmaller ? 0 : (height-384*s)/2);

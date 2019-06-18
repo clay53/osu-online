@@ -5,3 +5,4 @@ var enlarge = false;
 var verticalTextOffset = 2.5;
 var ACScale = 2;
 var disableVideo = false;
+var progressionBarMethod = "line";
