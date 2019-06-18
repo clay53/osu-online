@@ -7,12 +7,37 @@ function windowResized () {
 	resizeCanvas(config.enlarge ? windowWidth : 512, config.enlarge ? windowHeight : 384);
 }
 
+function keyPressed() {
+	if (scene === 'options') {
+		if (configOptionSelected !== -1 && typeof(config[configOptionSelected]) !== 'boolean') {
+			let option = config[Object.keys(config)[configOptionSelected]];
+			console.log(configOptionSelected);
+			if (typeof(option) === 'number') {
+				if (keyCode >= 48 && keyCode <= 57) {
+					config[Object.keys(config)[configOptionSelected]] = parseInt(option.toString()+String.fromCharCode(keyCode));
+				} else if (keyCode === 8) {
+					config[Object.keys(config)[configOptionSelected]] = option.length === 1 ? 0 : parseInt(option.toString().substr(0, option.length-1));
+				}
+			} else if (typeof(option) === 'string') {
+				if (keyCode >= 65 && keyCode <= 90) {
+					config[Object.keys(config)[configOptionSelected]] += String.fromCharCode(keyCode+32);
+				} else if (keyCode === 8 && option.length > 0) {
+					config[Object.keys(config)[configOptionSelected]] = option.substr(0, option.length-1);
+				}
+			} else {
+				console.log("Unkown option type: " + typeof(option));
+			}
+		}
+	}
+	return false;
+}
+
 function draw () {
 	//setTimeout(redraw, 1000/(config.fps*config.fpsM));
 	var wRSmaller = width/512 < height/384;
 	var s = (width/512 < height/384 ? width/512 : height/384);
 	if (scene === 'menu') {
-		background(255*0.95);
+		background(255, 204, 226);
 		
 		let circleX = menuCircleClicked ? width/3 : width/2;
 		let mouseOverCircle = Math.sqrt(Math.pow(mouseX-circleX, 2)+Math.pow(mouseY-height/2, 2)) <= 155;
@@ -83,14 +108,41 @@ function draw () {
 			mouseDownLastFrame = true;
 		}
 		pop();
+	} else if (scene === 'options') {
+		background(255, 204, 226);
+		push();
+		menuButton();
+		textSize(45);
+		textAlign(CENTER, CENTER);
+		noStroke();
+		fill(255);
+		text("Options", width/2, 25);
+		let i = -1;
+		pop();
+		for (key in config) {
+			i++;
+			let option = config[key];
+			push();
+			fill(255);
+			noStroke();
+			textSize(20);
+			textAlign(RIGHT, TOP);
+			text(key+": ", width/2, 45+i*25);
+			pop();
+			config[key] = (typeof(option) === 'boolean' ? checkBox(option, width/2, 45+i*25, 20, 20) : textArea(option, typeof(option), i, width/2, 45+i*25, 80, 20));
+		}
 	} else if (scene === 'select') {
-		background(255*0.95);
+		// Background
+		background(255, 204, 226);
 		if (selectedMap && selectedMap.hasBG && typeof(selectedMap.pictureBackground) !== "undefined" && selectedMap.pictureBackground.loaded) {
 			let bgC = selectedMap.pictureBackground.img;
 			let bgS = width/bgC.width > height/bgC.height ? width/bgC.width : height/bgC.height;
 			image(bgC, 0, 0, bgC.width*bgS, bgC.height*bgS);
 		}
-		
+
+		menuButton();
+
+		// Draw maps/sets
 		let spacing = 30;
 		let offset = 2.5;
 		
@@ -143,7 +195,7 @@ function draw () {
 					pop();
 				} else if (
 					map.hasBG &&
-					config.backgroundDim < 1 &&
+					config.backgroundDim < 100 &&
 					((typeof(map.pictureBackground) !== "undefined" ? !map.pictureBackground.loaded : false) ||
 					(typeof(map.videoBackground) !== "undefined" ? !map.videoBackground.loaded : false))
 				) {
@@ -199,7 +251,7 @@ function draw () {
 		if (!songPlaying) {
 			currentMap.audio.audio.setVolume(0.1);
 			currentMap.audio.audio.play();
-			if (currentMap.hasBG && config.backgroundDim < 1 && bg.type === 'video') {
+			if (currentMap.hasBG && config.backgroundDim < 100 && bg.type === 'video') {
 				bg.vid.play();
 			}
 			songPlaying = true;
@@ -209,13 +261,13 @@ function draw () {
 
 		// Draw Background
 		background(0);
-		if (currentMap.hasBG && config.backgroundDim < 1) {
+		if (currentMap.hasBG && config.backgroundDim < 100) {
 			let bgC = bg.type === 'image' ? bg.img : bg.vid;
 			let bgS = width/bgC.width > height/bgC.height ? width/bgC.width : height/bgC.height;
 			image(bgC, width/2, height/2, bgC.width*bgS, bgC.height*bgS);
 			push();
 			noStroke();
-			fill(0, 0, 0, 255*config.backgroundDim);
+			fill(0, 0, 0, 255*(config.backgroundDim/100));
 			rect(0, 0, width, height);
 			pop();
 		}

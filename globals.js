@@ -1,3 +1,6 @@
+const bW = 512;
+const bH = 384;
+
 var c;
 
 var beatmapSets = [];
@@ -15,10 +18,16 @@ var lastDraw = 0;
 var mouseDownLastFrame = false;
 
 var menuCircleClicked = false;
+var configOptionSelected = -1;
 
 function toMenu() {
     menuCircleClicked = false;
     scene = 'menu';
+}
+
+function toOptions() {
+    configOptionSelected = -1;
+    scene = 'options';
 }
 
 function resetToSelect() {
