@@ -9,7 +9,7 @@ function onBeatmapUpload () {
 			fileReader.readAsBinaryString(file);
 			fileReader.onload = () => {
 				JSZip.loadAsync(fileReader.result).then((zip) => {
-					resetToMenu();
+					resetToSelect();
 					var beatmapSet = {
 						maps: [],
 						audioFiles: {},

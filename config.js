@@ -1,8 +1,10 @@
-var fps = 60;
-var fpsM = 2;
-var backgroundDim = 0.5;
-var enlarge = false;
-var verticalTextOffset = 2.5;
-var ACScale = 2;
-var disableVideo = false;
-var progressionBarMethod = "line";
+config = {
+    fps: 60,
+    fpsM: 2,
+    backgroundDim: 0.5,
+    enlarge: false,
+    verticalTextOffset: 2.5,
+    ACScale: 2,
+    disableVideo: false,
+    progressionBarMethod: "line"
+}

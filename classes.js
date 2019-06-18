@@ -1,4 +1,5 @@
 progressionBarMethods = {
+    "none": function(){},
     "line": function () {
         let audio = currentMap.audio.audio;
         noStroke();

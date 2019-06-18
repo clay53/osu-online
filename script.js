@@ -1,17 +1,19 @@
 function setup () {
-	c = createCanvas(enlarge ? windowWidth : 512, enlarge ? windowHeight : 384);
+	c = createCanvas(config.enlarge ? windowWidth : 512, config.enlarge ? windowHeight : 384);
 	//noLoop();
 }
 
 function windowResized () {
-	resizeCanvas(enlarge ? windowWidth : 512, enlarge ? windowHeight : 384);
+	resizeCanvas(config.enlarge ? windowWidth : 512, config.enlarge ? windowHeight : 384);
 }
 
 function draw () {
-	//setTimeout(redraw, 1000/(fps*fpsM));
+	//setTimeout(redraw, 1000/(config.fps*config.fpsM));
 	var wRSmaller = width/512 < height/384;
 	var s = (width/512 < height/384 ? width/512 : height/384);
-	if (scene === 'select') {
+	if (scene === 'menu') {
+		background(255*0.95);
+	} else if (scene === 'select') {
 		background(255*0.95);
 		if (selectedMap && selectedMap.hasBG && typeof(selectedMap.pictureBackground) !== "undefined" && selectedMap.pictureBackground.loaded) {
 			let bgC = selectedMap.pictureBackground.img;
@@ -71,7 +73,7 @@ function draw () {
 					pop();
 				} else if (
 					map.hasBG &&
-					backgroundDim < 1 &&
+					config.backgroundDim < 1 &&
 					((typeof(map.pictureBackground) !== "undefined" ? !map.pictureBackground.loaded : false) ||
 					(typeof(map.videoBackground) !== "undefined" ? !map.videoBackground.loaded : false))
 				) {
@@ -123,11 +125,11 @@ function draw () {
 		}
 		pop();
 	} else if (scene === 'game') {
-		let bg = (!disableVideo && typeof(currentMap.videoBackground) !== "undefined" ? currentMap.videoBackground : currentMap.pictureBackground);
+		let bg = (!config.disableVideo && typeof(currentMap.videoBackground) !== "undefined" ? currentMap.videoBackground : currentMap.pictureBackground);
 		if (!songPlaying) {
 			currentMap.audio.audio.setVolume(0.1);
 			currentMap.audio.audio.play();
-			if (currentMap.hasBG && backgroundDim < 1 && bg.type === 'video') {
+			if (currentMap.hasBG && config.backgroundDim < 1 && bg.type === 'video') {
 				bg.vid.play();
 			}
 			songPlaying = true;
@@ -137,13 +139,13 @@ function draw () {
 
 		// Draw Background
 		background(0);
-		if (currentMap.hasBG && backgroundDim < 1) {
+		if (currentMap.hasBG && config.backgroundDim < 1) {
 			let bgC = bg.type === 'image' ? bg.img : bg.vid;
 			let bgS = width/bgC.width > height/bgC.height ? width/bgC.width : height/bgC.height;
 			image(bgC, width/2, height/2, bgC.width*bgS, bgC.height*bgS);
 			push();
 			noStroke();
-			fill(0, 0, 0, 255*backgroundDim);
+			fill(0, 0, 0, 255*config.backgroundDim);
 			rect(0, 0, width, height);
 			pop();
 		}
@@ -153,7 +155,7 @@ function draw () {
 
 		// Draw progression bar
 		push();
-		progressionBarMethods[progressionBarMethod]();
+		progressionBarMethods[config.progressionBarMethod]();
 		pop();
 
 		// Do timing points
@@ -185,7 +187,7 @@ function draw () {
 						fill(255, 255, 255, 0);
 						stroke(255);
 						strokeWeight(r/10);
-						ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt*ACScale+1));
+						ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt*config.ACScale+1));
 						pop();
 
 						push();
@@ -196,7 +198,7 @@ function draw () {
 						textAlign(CENTER, CENTER);
 						textSize(r);
 						fill(0);
-						text(this.combo, this.x, this.y+verticalTextOffset);
+						text(this.combo, this.x, this.y+config.verticalTextOffset);
 						pop();
 					}
 				});
@@ -254,11 +256,11 @@ function draw () {
 								noFill();
 								stroke(255);
 								strokeWeight(r/10);
-								ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt*ACScale+1));
+								ellipse(this.x, this.y, r*((this.time-currentTime)/currentMap.preempt*config.ACScale+1));
 								textAlign(CENTER, CENTER);
 								textSize(r);
 								fill(0);
-								text(this.combo, this.x, this.y+verticalTextOffset);
+								text(this.combo, this.x, this.y+config.verticalTextOffset);
 								pop();
 							} else {
 								push();
@@ -273,7 +275,7 @@ function draw () {
 								noFill();
 								stroke(255);
 								strokeWeight(r/10);
-								ellipse(0, 0, r*ACScale);
+								ellipse(0, 0, r*config.ACScale);
 								pop();
 							}
 							pop();
@@ -338,11 +340,11 @@ function draw () {
 								noFill();
 								stroke(255);
 								strokeWeight(r/10);
-								ellipse(this.points[0].x, this.points[0].y, r*((this.time-currentTime)/currentMap.preempt*ACScale+1));
+								ellipse(this.points[0].x, this.points[0].y, r*((this.time-currentTime)/currentMap.preempt*config.ACScale+1));
 								textAlign(CENTER, CENTER);
 								textSize(r);
 								fill(0);
-								text(this.combo, this.points[0].x, this.points[0].y+verticalTextOffset);
+								text(this.combo, this.points[0].x, this.points[0].y+config.verticalTextOffset);
 								pop();
 							} else {
 								push();
@@ -356,7 +358,7 @@ function draw () {
 									noFill();
 									stroke(255);
 									strokeWeight(r/10);
-									ellipse(slidePos.x, slidePos.y, r*ACScale);
+									ellipse(slidePos.x, slidePos.y, r*config.ACScale);
 								}
 								pop();
 							}
