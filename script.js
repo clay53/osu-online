@@ -166,7 +166,8 @@ function draw () {
 					selectedMapIndex = 0;
 					selectedMap = beatmapSets[0].maps[0];
 				}
-				line(0, 0, width, 0);
+				stroke(255);
+				line(width/2, 0, width, 0);
 			}
 			let mapIndex = -1;
 			for (let i in beatmapSets) {
@@ -195,14 +196,16 @@ function draw () {
 					}
 
 					// Display
-					line(0, (mapIndex+1)*spacing, width, (mapIndex+1)*spacing);
+					stroke(255);
+					line(width/2, (mapIndex+1)*spacing, width, (mapIndex+1)*spacing);
 					push();
 					fill(0, 0, 0, 255*0.9);
-					rect(0, mapIndex*spacing, width, spacing);
+					rect(width/2, mapIndex*spacing, width/2, spacing);
 					pop();
 					if (map.mode !== '0' && map.mode !== '3') {
 						push();
 						textAlign(RIGHT, TOP);
+						noStroke();
 						fill(255);
 						text("Mode not yet supported", width, mapIndex*spacing+offset);
 						pop();
@@ -214,18 +217,21 @@ function draw () {
 					) {
 						push();
 						textAlign(RIGHT, TOP);
+						noStroke();
 						fill(255);
 						text("Loading Background...", width, mapIndex*spacing+offset);
 						pop();
 					} else if (!map.audio.loaded) {
 						push();
 						textAlign(RIGHT, TOP);
+						noStroke();
 						fill(255);
 						text("Loading Audio...", width, mapIndex*spacing+offset);
 						pop();
 					} else {
 						push();
 						textAlign(RIGHT, TOP);
+						noStroke();
 						fill(255);
 						text(map.title + " [" + map.version + "]\nA:" + map.artist + " M:" + map.creator, width, mapIndex*spacing+offset);
 						pop();
@@ -233,14 +239,14 @@ function draw () {
 							push();
 							fill(0, 255, 0, 20);
 							noStroke();
-							rect(0, mapIndex*spacing, width, spacing);
+							rect(width/2, mapIndex*spacing, width/2, spacing);
 							pop();
 						}
 						if (mouseY > height/2-(selectedMapIndex+0.5)*spacing+mapIndex*spacing && mouseY < height/2-(selectedMapIndex+0.5)*spacing+(mapIndex+1)*spacing) {
 							push();
 							fill(255, 255, 255, mouseIsPressed ? 40 : 20);
 							noStroke();
-							rect(0, mapIndex*spacing, width, spacing);
+							rect(width/2, mapIndex*spacing, width/2, spacing);
 							pop();
 							if (mouseIsPressed && !mouseDownLastFrame) {
 								if (mapIndex === selectedMapIndex) {
