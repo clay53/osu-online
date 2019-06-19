@@ -16,7 +16,8 @@ function keyPressed() {
 				if (keyCode >= 48 && keyCode <= 57) {
 					config[Object.keys(config)[configOptionSelected]] = parseInt(option.toString()+String.fromCharCode(keyCode));
 				} else if (keyCode === 8) {
-					config[Object.keys(config)[configOptionSelected]] = option.length === 1 ? 0 : parseInt(option.toString().substr(0, option.length-1));
+					let optionStr = option.toString();
+					config[Object.keys(config)[configOptionSelected]] = optionStr.length === 1 ? 0 : parseInt(optionStr.substr(0, optionStr.length-1));
 				}
 			} else if (typeof(option) === 'string') {
 				if (keyCode >= 65 && keyCode <= 90) {
