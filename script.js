@@ -143,109 +143,124 @@ function draw () {
 		menuButton();
 
 		// Draw maps/sets
-		let spacing = 30;
-		let offset = 2.5;
-		
-		push();
-		translate(0, height/2-(selectedMapIndex+0.5)*spacing);
-		if (beatmapSets.length > 0 && beatmapSets[0].maps.length > 0) {
-			if (selectedMap === undefined) {
-				selectedMapIndex = 0;
-				selectedMap = beatmapSets[0].maps[0];
+		if (beatmapSets.length > 0) {
+			let spacing = 30;
+			let offset = 2.5;
+			
+			push();
+			translate(0, height/2-(selectedMapIndex+0.5)*spacing);
+			if (beatmapSets.length > 0 && beatmapSets[0].maps.length > 0) {
+				if (selectedMap === undefined) {
+					selectedMapIndex = 0;
+					selectedMap = beatmapSets[0].maps[0];
+				}
+				line(0, 0, width, 0);
 			}
-			line(0, 0, width, 0);
-		}
-		let mapIndex = -1;
-		for (let i in beatmapSets) {
-			let beatmapSet = beatmapSets[i];
-			for (let j in beatmapSet.maps) {
-				mapIndex++;
-				let map = beatmapSet.maps[j];
+			let mapIndex = -1;
+			for (let i in beatmapSets) {
+				let beatmapSet = beatmapSets[i];
+				for (let j in beatmapSet.maps) {
+					mapIndex++;
+					let map = beatmapSet.maps[j];
 
-				// Verify background
-				for (let i in map.possibleBackgrounds) {
-					if (beatmapSet.backgroundFiles[map.possibleBackgrounds[i]] !== undefined) {
-						let bg = beatmapSet.backgroundFiles[map.possibleBackgrounds[i]];
-						if (bg.type === 'image') {
-							map.pictureBackground = bg;
-						} else {
-							map.videoBackground = bg;
-						}
-						map.hasBG = true;
-					}
-				}
-				map.possibleBackgrounds = [];
-
-				// Verify audio
-				if (typeof(map.audio) === "undefined") {
-					map.audio = beatmapSet.audioFiles[map.audioName];
-				}
-
-				// Display
-				line(0, (mapIndex+1)*spacing, width, (mapIndex+1)*spacing);
-				push();
-				fill(0, 0, 0, 255*0.9);
-				rect(0, mapIndex*spacing, width, spacing);
-				pop();
-				if (map.mode !== '0' && map.mode !== '3') {
-					push();
-					textAlign(RIGHT, TOP);
-					fill(255);
-					text("Mode not yet supported", width, mapIndex*spacing+offset);
-					pop();
-				} else if (
-					map.hasBG &&
-					config.backgroundDim < 100 &&
-					((typeof(map.pictureBackground) !== "undefined" ? !map.pictureBackground.loaded : false) ||
-					(typeof(map.videoBackground) !== "undefined" ? !map.videoBackground.loaded : false))
-				) {
-					push();
-					textAlign(RIGHT, TOP);
-					fill(255);
-					text("Loading Background...", width, mapIndex*spacing+offset);
-					pop();
-				} else if (!map.audio.loaded) {
-					push();
-					textAlign(RIGHT, TOP);
-					fill(255);
-					text("Loading Audio...", width, mapIndex*spacing+offset);
-					pop();
-				} else {
-					push();
-					textAlign(RIGHT, TOP);
-					fill(255);
-					text(map.title + " [" + map.version + "]\nA:" + map.artist + " M:" + map.creator, width, mapIndex*spacing+offset);
-					pop();
-					if (selectedMapIndex === mapIndex) {
-						push();
-						fill(0, 255, 0, 20);
-						noStroke();
-						rect(0, mapIndex*spacing, width, spacing);
-						pop();
-					}
-					if (mouseY > height/2-(selectedMapIndex+0.5)*spacing+mapIndex*spacing && mouseY < height/2-(selectedMapIndex+0.5)*spacing+(mapIndex+1)*spacing) {
-						push();
-						fill(255, 255, 255, mouseIsPressed ? 40 : 20);
-						noStroke();
-						rect(0, mapIndex*spacing, width, spacing);
-						pop();
-						if (mouseIsPressed && !mouseDownLastFrame) {
-							if (mapIndex === selectedMapIndex) {
-								currentMap = map;
-								actions = [];
-								songPlaying = false;
-								scene = 'game';
+					// Verify background
+					for (let i in map.possibleBackgrounds) {
+						if (beatmapSet.backgroundFiles[map.possibleBackgrounds[i]] !== undefined) {
+							let bg = beatmapSet.backgroundFiles[map.possibleBackgrounds[i]];
+							if (bg.type === 'image') {
+								map.pictureBackground = bg;
 							} else {
-								selectedMapIndex = mapIndex;
-								selectedMap = map;
-								mouseDownLastFrame = true;
+								map.videoBackground = bg;
+							}
+							map.hasBG = true;
+						}
+					}
+					map.possibleBackgrounds = [];
+
+					// Verify audio
+					if (typeof(map.audio) === "undefined") {
+						map.audio = beatmapSet.audioFiles[map.audioName];
+					}
+
+					// Display
+					line(0, (mapIndex+1)*spacing, width, (mapIndex+1)*spacing);
+					push();
+					fill(0, 0, 0, 255*0.9);
+					rect(0, mapIndex*spacing, width, spacing);
+					pop();
+					if (map.mode !== '0' && map.mode !== '3') {
+						push();
+						textAlign(RIGHT, TOP);
+						fill(255);
+						text("Mode not yet supported", width, mapIndex*spacing+offset);
+						pop();
+					} else if (
+						map.hasBG &&
+						config.backgroundDim < 100 &&
+						((typeof(map.pictureBackground) !== "undefined" ? !map.pictureBackground.loaded : false) ||
+						(typeof(map.videoBackground) !== "undefined" ? !map.videoBackground.loaded : false))
+					) {
+						push();
+						textAlign(RIGHT, TOP);
+						fill(255);
+						text("Loading Background...", width, mapIndex*spacing+offset);
+						pop();
+					} else if (!map.audio.loaded) {
+						push();
+						textAlign(RIGHT, TOP);
+						fill(255);
+						text("Loading Audio...", width, mapIndex*spacing+offset);
+						pop();
+					} else {
+						push();
+						textAlign(RIGHT, TOP);
+						fill(255);
+						text(map.title + " [" + map.version + "]\nA:" + map.artist + " M:" + map.creator, width, mapIndex*spacing+offset);
+						pop();
+						if (selectedMapIndex === mapIndex) {
+							push();
+							fill(0, 255, 0, 20);
+							noStroke();
+							rect(0, mapIndex*spacing, width, spacing);
+							pop();
+						}
+						if (mouseY > height/2-(selectedMapIndex+0.5)*spacing+mapIndex*spacing && mouseY < height/2-(selectedMapIndex+0.5)*spacing+(mapIndex+1)*spacing) {
+							push();
+							fill(255, 255, 255, mouseIsPressed ? 40 : 20);
+							noStroke();
+							rect(0, mapIndex*spacing, width, spacing);
+							pop();
+							if (mouseIsPressed && !mouseDownLastFrame) {
+								if (mapIndex === selectedMapIndex) {
+									currentMap = map;
+									actions = [];
+									songPlaying = false;
+									scene = 'game';
+								} else {
+									selectedMapIndex = mapIndex;
+									selectedMap = map;
+									mouseDownLastFrame = true;
+								}
 							}
 						}
 					}
 				}
 			}
+			pop();
+		} else {
+			push();
+			line(0, 0, width, 0);
+			fill(0, 0, 0, 255*0.9);
+			rect(0, 0, width, 30);
+			fill(255);
+			noStroke();
+			textSize(20);
+			textAlign(RIGHT, CENTER);
+			text("No maps detected...", width-5, 30/2+config.verticalTextOffset);
+			stroke(0);
+			line(0, 30, width, 30);
+			pop();
 		}
-		pop();
 	} else if (scene === 'game') {
 		let bg = (!config.disableVideo && typeof(currentMap.videoBackground) !== "undefined" ? currentMap.videoBackground : currentMap.pictureBackground);
 		if (!songPlaying) {
