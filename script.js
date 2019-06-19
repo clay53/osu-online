@@ -7,6 +7,13 @@ function windowResized () {
 	resizeCanvas(config.enlarge ? windowWidth : 512, config.enlarge ? windowHeight : 384);
 }
 
+function mouseWheel(event) {
+	if (scene === 'select') {
+		scrollMap(event.delta/Math.abs(event.delta) === -1);
+	}
+	return false;
+}
+
 function keyPressed() {
 	if (scene === 'options') {
 		if (configOptionSelected !== -1 && typeof(config[configOptionSelected]) !== 'boolean') {
@@ -28,6 +35,10 @@ function keyPressed() {
 			} else {
 				console.log("Unkown option type: " + typeof(option));
 			}
+		}
+	} else if (scene === 'select') {
+		if (keyCode === 38 || keyCode === 40) {
+			scrollMap(keyCode === 38);
 		}
 	}
 	return false;

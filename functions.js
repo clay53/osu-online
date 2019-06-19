@@ -165,3 +165,27 @@ function smoothCurvePoint (cpx1, cpy1, x1, y1, x2, y2, cpx2, cpy2, t, dM = 20) {
     }
   }
 }
+
+function getMapByIndex(index) {
+  let i = 0;
+  for (let j = 0; j < beatmapSets.length; j++) {
+    if (i+beatmapSets[j].maps.length-1 >= index) {
+      return beatmapSets[j].maps[index-i];
+    } else {
+      i += beatmapSets[j].maps.length;
+    }
+  }
+  return undefined;
+}
+
+function scrollMap(scrollUp) {
+  let nextIndex = scrollUp ? selectedMapIndex-1 : selectedMapIndex+1;
+  let nextMap = getMapByIndex(nextIndex);
+  if (nextMap !== undefined) {
+    selectedMapIndex = nextIndex;
+    selectedMap = nextMap;
+    return true;
+  } else {
+    return false;
+  }
+}
